@@ -211,7 +211,30 @@ def main(args):
         ]
 
     for i in range(len(motions)):
-        motion_ops.translate(motions[i], [args.x_offset * i, 0, 0])
+        # Set to ground plane
+        motion = motions[i]
+        offset = 2 * motion.poses[0].data[0][0:3, -1]
+        motion_ops.translate(motion, [args.x_offset * i, 0, 0] - offset)
+
+        # Upsample to 60 fps
+        if motion.fps != 60:
+            intermediate_poses = []
+            for pose_source, pose_target in zip(motion.poses[:-1], motion.poses[1:]):
+                between_pose = motion_ops.blend(pose_source, pose_target, alpha=0.5)
+                intermediate_poses.append(between_pose)
+
+            motion.fps = 60
+            motion.poses = [val for pair in zip(motion.poses, intermediate_poses) for val in pair] + [motion.poses[-1]]
+
+        # Extract joint locations
+        matrix = motion.to_matrix(local=False)
+        xyz = matrix[:, :, :3, 3]
+
+        # Save file
+        basename = lambda p: os.path.splitext(os.path.basename(p))[0]
+        filename = f"{basename(args.bvh_files[i])}.npy"
+        np.save(filename, xyz)
+
     cam = camera.Camera(
         pos=np.array(args.camera_position),
         origin=np.array(args.camera_origin),
