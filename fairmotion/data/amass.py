@@ -85,9 +85,12 @@ def create_motion_from_amass_data(filename, bm, override_betas=None):
         betas = torch.Tensor(override_betas[:10][np.newaxis]).to("cpu")
     else:
         betas = torch.Tensor(bdata["betas"][:10][np.newaxis]).to("cpu")
-    
+
     skel = create_skeleton_from_amass_bodymodel(
-        bm, betas, len(joint_names), joint_names,
+        bm,
+        betas,
+        len(joint_names),
+        joint_names,
     )
 
     fps = float(bdata["mocap_framerate"])
@@ -112,9 +115,7 @@ def create_motion_from_amass_data(filename, bm, override_betas=None):
                 )
             else:
                 T = conversions.R2T(
-                    conversions.A2R(
-                        pose_body_frame[(j - 1) * 3 : (j - 1) * 3 + 3]
-                    )
+                    conversions.A2R(pose_body_frame[(j - 1) * 3 : (j - 1) * 3 + 3])
                 )
             pose_data.append(T)
         motion.add_one_frame(pose_data)
@@ -125,21 +126,24 @@ def create_motion_from_amass_data(filename, bm, override_betas=None):
 def load_body_model(bm_path, num_betas=10, model_type="smplh"):
     comp_device = torch.device("cpu")
     bm = BodyModel(
-        bm_path=bm_path, 
-        num_betas=num_betas, 
+        bm_path=bm_path,
+        num_betas=num_betas,
         # model_type=model_type
     ).to(comp_device)
     return bm
 
 
-def load(file, bm=None, bm_path=None, num_betas=10, model_type="smplh", override_betas=None):
+def load(
+    file, bm=None, bm_path=None, num_betas=10, model_type="smplh", override_betas=None
+):
     if bm is None:
         # Download the required body model. For SMPL-H download it from
         # http://mano.is.tue.mpg.de/.
         assert bm_path is not None, "Please provide SMPL body model path"
         bm = load_body_model(bm_path, num_betas, model_type)
     return create_motion_from_amass_data(
-        filename=file, bm=bm, override_betas=override_betas)
+        filename=file, bm=bm, override_betas=override_betas
+    )
 
 
 def save():

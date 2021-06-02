@@ -124,13 +124,9 @@ def parse_asf(file_path):
 
 def set_rotation(joint):
     if "root" in joint.name:
-        joint.matrix = joint.C.dot(conversions.E2R(joint.degree)).dot(
-            joint.Cinv
-        )
+        joint.matrix = joint.C.dot(conversions.E2R(joint.degree)).dot(joint.Cinv)
     else:
-        joint.matrix = joint.C.dot(conversions.E2R(joint.degree)).dot(
-            joint.Cinv
-        )
+        joint.matrix = joint.C.dot(conversions.E2R(joint.degree)).dot(joint.Cinv)
         joint.coordinate = joint.length * joint.matrix.dot(joint.direction)
     for child in joint.child_joints:
         set_rotation(child)

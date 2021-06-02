@@ -37,21 +37,20 @@ class TestMotion(unittest.TestCase):
         )
         # Ensure operation has not been done in place
         self.assertEqual(
-            motion1.num_frames(), num_frames,
+            motion1.num_frames(),
+            num_frames,
         )
 
         # Test blending
         blend_length = 0.1
         combined_motion3 = motion_ops.append_and_blend(
-            motion1, motion2, blend_length=blend_length,
+            motion1,
+            motion2,
+            blend_length=blend_length,
         )
         self.assertEqual(
             combined_motion3.num_frames(),
-            (
-                motion1.num_frames()
-                + motion2.num_frames()
-                - blend_length * motion1.fps
-            ),
+            (motion1.num_frames() + motion2.num_frames() - blend_length * motion1.fps),
         )
 
 

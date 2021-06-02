@@ -44,9 +44,7 @@ def process_file(ftuple, create_windows, convert_fn, lengths):
             return [], []
         matrices = [
             convert_fn(motion.rotations())
-            for motion in split_into_windows(
-                motion, window_size, window_stride
-            )
+            for motion in split_into_windows(motion, window_size, window_stride)
         ]
     else:
         matrices = [convert_fn(motion.rotations())]
@@ -61,7 +59,12 @@ def process_file(ftuple, create_windows, convert_fn, lengths):
 
 
 def process_split(
-    all_fnames, output_path, rep, src_len, tgt_len, create_windows=None,
+    all_fnames,
+    output_path,
+    rep,
+    src_len,
+    tgt_len,
+    create_windows=None,
 ):
     """
     Process data into numpy arrays.
@@ -156,9 +159,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    train_files = read_content(
-        os.path.join(args.split_dir, "training_fnames.txt")
-    )
+    train_files = read_content(os.path.join(args.split_dir, "training_fnames.txt"))
     validation_files = read_content(
         os.path.join(args.split_dir, "validation_fnames.txt")
     )

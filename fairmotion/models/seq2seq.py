@@ -39,7 +39,11 @@ class Seq2Seq(nn.Module):
         """
         hidden, cell, outputs = self.encoder(src)
         outputs = self.decoder(
-            tgt, hidden, cell, max_len, teacher_forcing_ratio,
+            tgt,
+            hidden,
+            cell,
+            max_len,
+            teacher_forcing_ratio,
         )
         return outputs
 
@@ -62,9 +66,9 @@ class TiedSeq2Seq(nn.Module):
             hidden_size=hidden_dim,
             num_layers=num_layers,
         ).to(device)
-        self.encoder = encoders.LSTMEncoder(
-            input_dim=input_dim, lstm=tied_lstm
-        ).to(device)
+        self.encoder = encoders.LSTMEncoder(input_dim=input_dim, lstm=tied_lstm).to(
+            device
+        )
         self.decoder = decoders.LSTMDecoder(
             input_dim=input_dim,
             hidden_dim=hidden_dim,
@@ -80,6 +84,11 @@ class TiedSeq2Seq(nn.Module):
     def forward(self, src, tgt, max_len=None, teacher_forcing_ratio=0.5):
         hidden, cell, outputs = self.encoder(src)
         outputs = self.decoder(
-            tgt, hidden, cell, outputs, max_len, teacher_forcing_ratio,
+            tgt,
+            hidden,
+            cell,
+            outputs,
+            max_len,
+            teacher_forcing_ratio,
         )
         return outputs

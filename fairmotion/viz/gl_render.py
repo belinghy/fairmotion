@@ -147,9 +147,7 @@ def render_sphere_info(
     )
 
 
-def render_cylinder(
-    T, length, radius, scale=1.0, color=[0, 0, 0, 1], slice=16
-):
+def render_cylinder(T, length, radius, scale=1.0, color=[0, 0, 0, 1], slice=16):
     quadric = gluNewQuadric()
     gluQuadricDrawStyle(quadric, GLU_FILL)
     gluQuadricNormals(quadric, GLU_SMOOTH)
@@ -364,9 +362,7 @@ def render_tet(p1, p2, p3, p4, color=[1.0, 1.0, 1.0, 1.0]):
     render_tri(p3, p1, p4, color)
 
 
-def render_tet_line(
-    p1, p2, p3, p4, color=[0.0, 0.0, 0.0, 1.0], line_width=1.0
-):
+def render_tet_line(p1, p2, p3, p4, color=[0.0, 0.0, 0.0, 1.0], line_width=1.0):
     render_line(p1, p2, color, line_width)
     render_line(p2, p3, color, line_width)
     render_line(p3, p1, color, line_width)
@@ -446,9 +442,7 @@ def render_ground_texture(
         glPopMatrix()
 
 
-def render_path(
-    data, color=[0.0, 0.0, 0.0], scale=1.0, line_width=1.0, point_size=1.0
-):
+def render_path(data, color=[0.0, 0.0, 0.0], scale=1.0, line_width=1.0, point_size=1.0):
     glColor(color)
     glLineWidth(line_width)
     glBegin(GL_LINE_STRIP)
@@ -480,9 +474,7 @@ def render_arrow(p1, p2, D=0.1, color=[1.0, 0.5, 0.0], closed=False):
 
     if x != 0.0 or y != 0.0:
         glRotated(math.atan2(y, x) / RADPERDEG, 0.0, 0.0, 1.0)
-        glRotated(
-            math.atan2(math.sqrt(x * x + y * y), z) / RADPERDEG, 0.0, 1.0, 0.0
-        )
+        glRotated(math.atan2(math.sqrt(x * x + y * y), z) / RADPERDEG, 0.0, 1.0, 0.0)
     elif z < 0:
         glRotated(180, 1.0, 0.0, 0.0)
 
@@ -528,17 +520,11 @@ def render_transform(
         o = np.zeros(3)
         if use_arrow:
             if render_ori[0]:
-                render_arrow(
-                    o, o + R[:, 0], D=line_width * 0.02, color=color_ori[0]
-                )
+                render_arrow(o, o + R[:, 0], D=line_width * 0.02, color=color_ori[0])
             if render_ori[1]:
-                render_arrow(
-                    o, o + R[:, 1], D=line_width * 0.02, color=color_ori[1]
-                )
+                render_arrow(o, o + R[:, 1], D=line_width * 0.02, color=color_ori[1])
             if render_ori[2]:
-                render_arrow(
-                    o, o + R[:, 2], D=line_width * 0.02, color=color_ori[2]
-                )
+                render_arrow(o, o + R[:, 2], D=line_width * 0.02, color=color_ori[2])
         else:
             if render_ori[0]:
                 render_line(o, o + R[:, 0], color=color_ori[0])
@@ -637,9 +623,7 @@ def render_quad_2D(p1, p2, p3, p4, color=[0, 0, 0, 1]):
     glEnd()
 
 
-def render_text(
-    text, pos, font=GLUT_BITMAP_TIMES_ROMAN_10, color=[0, 0, 0, 1]
-):
+def render_text(text, pos, font=GLUT_BITMAP_TIMES_ROMAN_10, color=[0, 0, 0, 1]):
     glPushAttrib(GL_DEPTH_TEST | GL_LIGHTING)
 
     glDisable(GL_DEPTH_TEST)
@@ -762,9 +746,7 @@ def render_graph_data_line_2D(
             y0 = origin[1] - axis_len * (y_prev - y_r[i][0]) / y_range_len
             x1 = origin[0] + axis_len * (x_cur - x_r[i][0]) / x_range_len
             y1 = origin[1] - axis_len * (y_cur - y_r[i][0]) / y_range_len
-            render_line_2D(
-                p1=(x0, y0), p2=(x1, y1), line_width=l_w[i], color=c[i]
-            )
+            render_line_2D(p1=(x0, y0), p2=(x1, y1), line_width=l_w[i], color=c[i])
             x_prev, y_prev = x_cur, y_cur
 
 
@@ -828,7 +810,7 @@ def render_progress_circle_2D(
     render_circle(T=T, r=radius, line_width=line_width, color=color_base)
     theta = 2 * math.pi * progress
     p += radius * np.array([math.cos(theta), math.sin(theta), 0])
-    render_point_2D((p[0], p[1]), size=scale_input*radius, color=color_input)
+    render_point_2D((p[0], p[1]), size=scale_input * radius, color=color_input)
 
 
 def render_direction_input_2D(
@@ -846,10 +828,8 @@ def render_direction_input_2D(
     p = np.array([origin[0], origin[1], 0])
     T = conversions.p2T(p)
     render_circle(T=T, r=radius, line_width=line_width, color=color_base)
-    render_line_2D(
-        p1=origin, p2=origin + v, line_width=line_width, color=color_input
-    )
-    render_point_2D(origin, size=scale_input*radius, color=[0.5, 0.5, 0.5, 1])
+    render_line_2D(p1=origin, p2=origin + v, line_width=line_width, color=color_input)
+    render_point_2D(origin, size=scale_input * radius, color=[0.5, 0.5, 0.5, 1])
 
 
 def render_matrix(

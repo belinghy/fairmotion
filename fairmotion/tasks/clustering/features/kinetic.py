@@ -6,9 +6,7 @@ from fairmotion.tasks.clustering.features import utils as feat_utils
 
 
 class KineticFeatures:
-    def __init__(
-        self, motion, frame_time, thresholds, up_vec, sliding_window=2
-    ):
+    def __init__(self, motion, frame_time, thresholds, up_vec, sliding_window=2):
         self.local_positions = motion.positions(local=True)
         self.positions = motion_ops.position_wrt_root(motion)
         self.frame_time = frame_time
@@ -23,9 +21,7 @@ class KineticFeatures:
                 self.positions, i, joint, self.sliding_window, self.frame_time
             )
             average_kinetic_energy += average_velocity ** 2
-        average_kinetic_energy = average_kinetic_energy / (
-            len(self.positions) - 1.0
-        )
+        average_kinetic_energy = average_kinetic_energy / (len(self.positions) - 1.0)
         return average_kinetic_energy
 
     def average_kinetic_energy_horizontal(self, joint):

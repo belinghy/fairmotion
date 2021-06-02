@@ -97,9 +97,7 @@ def root_ee_similarity(
                 p2s.append(p2)
                 if auto_weight:
                     h = math_ops.projectionOnVector(p1, skel.v_up_env)
-                    ee_weights.append(
-                        math.exp(-np.dot(h, h) / auto_weight_sigma)
-                    )
+                    ee_weights.append(math.exp(-np.dot(h, h) / auto_weight_sigma))
                 else:
                     ee_weights.append(1.0)
             ee_weights_sum = np.sum(ee_weights)
@@ -183,10 +181,6 @@ def pose_similarity(
     if vel1 is not None and w_joint_vel > 0.0:
         skel = vel1.skel
         for j in range(skel.num_joints()):
-            dw = vel2.get_angular(j, local=True) - vel1.get_angular(
-                j, local=True
-            )
+            dw = vel2.get_angular(j, local=True) - vel1.get_angular(j, local=True)
             diff_vel += w_joints[j] * np.dot(dw, dw)
-    return (
-        w_joint_pos * diff_pos + w_joint_vel * diff_vel
-    ) / skel.num_joints()
+    return (w_joint_pos * diff_pos + w_joint_vel * diff_vel) / skel.num_joints()

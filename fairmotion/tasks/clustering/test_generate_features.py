@@ -31,7 +31,11 @@ class Test3DGeometryUtils(unittest.TestCase):
     def test_distance_from_plane_normal(self):
         self.assertEqual(
             utils.distance_from_plane_normal(
-                [0, 0, 0], [0, 0, 1], [0, 0, 0], [0, 1, 2], 3,
+                [0, 0, 0],
+                [0, 0, 1],
+                [0, 0, 0],
+                [0, 1, 2],
+                3,
             ),
             False,
         )
@@ -45,13 +49,21 @@ class Test3DGeometryUtils(unittest.TestCase):
     def test_distance_from_plane(self):
         self.assertEqual(
             utils.distance_from_plane(
-                [0, 0, 0], [0, 1, 0], [1, 0, 0], [0, 0, 1], 2,
+                [0, 0, 0],
+                [0, 1, 0],
+                [1, 0, 0],
+                [0, 0, 1],
+                2,
             ),
             False,
         )
         self.assertEqual(
             utils.distance_from_plane(
-                [0, 0, 0], [0, 1, 0], [1, 0, 0], [0, 0, 1], 0,
+                [0, 0, 0],
+                [0, 1, 0],
+                [1, 0, 0],
+                [0, 0, 1],
+                0,
             ),
             True,
         )

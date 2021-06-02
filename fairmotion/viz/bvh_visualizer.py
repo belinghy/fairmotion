@@ -83,13 +83,11 @@ class MocapViewer(glut_viewer.Viewer):
             self.play_speed = min(self.play_speed + 0.2, 5.0)
         elif key == b"-":
             self.play_speed = max(self.play_speed - 0.2, 0.2)
-        elif (key == b"r" or key == b"v"):
+        elif key == b"r" or key == b"v":
             self.cur_time = 0.0
             end_time = motion.length()
             fps = motion.fps
-            save_path = input(
-                "Enter directory/file to store screenshots/video: "
-            )
+            save_path = input("Enter directory/file to store screenshots/video: ")
             cnt_screenshot = 0
             dt = 1 / fps
             gif_images = []
@@ -104,9 +102,7 @@ class MocapViewer(glut_viewer.Viewer):
                     self.save_screen(dir=save_path, name=name, render=True)
                 else:
                     image = self.get_screen(render=True)
-                    gif_images.append(
-                        image.convert("P", palette=Image.ADAPTIVE)
-                    )
+                    gif_images.append(image.convert("P", palette=Image.ADAPTIVE))
                 self.cur_time += dt
                 cnt_screenshot += 1
             if key == b"v":
@@ -211,10 +207,19 @@ def main(args):
         ]
 
     for i in range(len(motions)):
-        # Set to ground plane
+        filename = args.bvh_files[i]
         motion = motions[i]
-        offset = 2 * motion.poses[0].data[0][0:3, -1]
-        motion_ops.translate(motion, [args.x_offset * i, 0, 0] - offset)
+
+        if "ubisoft" in filename:
+            R90 = conversions.E2R([np.pi / 2, 0, 0])
+            motion_ops.rotate(motion, R90)
+
+            # Only root need to be rotated
+            root_joint_loc = motion.skel.joints[0].xform_from_parent_joint
+            root_joint_loc[0:3, -1] = R90 @ root_joint_loc[0:3, -1]
+
+            for pose in motion.poses:
+                pose.data[0][0:3, -1] = R90 @ pose.data[0][0:3, -1]
 
         # Upsample to 60 fps
         if motion.fps != 60:
@@ -225,6 +230,11 @@ def main(args):
 
             motion.fps = 60
             motion.poses = [val for pair in zip(motion.poses, intermediate_poses) for val in pair] + [motion.poses[-1]]
+
+        # Set to ground plane
+        offset = 2 * motion.poses[0].data[0][0:3, -1]
+        offset[2] -= motion.skel.joints[0].xform_from_parent_joint[2, -1]
+        motion_ops.translate(motion, [args.x_offset * i, 0, 0] - offset)
 
         # Extract joint locations
         matrix = motion.to_matrix(local=False)
@@ -256,24 +266,20 @@ def main(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Visualize BVH file with block body"
-    )
+    parser = argparse.ArgumentParser(description="Visualize BVH file with block body")
     parser.add_argument("--bvh-files", type=str, nargs="+", required=False)
     parser.add_argument("--asf-files", type=str, nargs="+", required=False)
     parser.add_argument("--amc-files", type=str, nargs="+", required=False)
     parser.add_argument("--scale", type=float, default=1.0)
     parser.add_argument(
-        "--thickness", type=float, default=1.0,
-        help="Thickness (radius) of character body"
+        "--thickness",
+        type=float,
+        default=1.0,
+        help="Thickness (radius) of character body",
     )
     parser.add_argument("--speed", type=float, default=1.0)
-    parser.add_argument(
-        "--axis-up", type=str, choices=["x", "y", "z"], default="z"
-    )
-    parser.add_argument(
-        "--axis-face", type=str, choices=["x", "y", "z"], default="y"
-    )
+    parser.add_argument("--axis-up", type=str, choices=["x", "y", "z"], default="z")
+    parser.add_argument("--axis-face", type=str, choices=["x", "y", "z"], default="y")
     parser.add_argument(
         "--camera-position",
         nargs="+",

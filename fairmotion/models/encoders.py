@@ -5,7 +5,11 @@ import torch.nn as nn
 
 class LSTMEncoder(nn.Module):
     def __init__(
-        self, input_dim=None, hidden_dim=1024, num_layers=1, lstm=None,
+        self,
+        input_dim=None,
+        hidden_dim=1024,
+        num_layers=1,
+        lstm=None,
     ):
         """LSTMEncoder encodes input vector using LSTM cells.
 

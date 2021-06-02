@@ -48,9 +48,7 @@ class ManualFeatures:
         elif j == "y_min":
             return [
                 0,
-                min(
-                    [y for (_, y, _) in self.global_positions[self.frame_num]]
-                ),
+                min([y for (_, y, _) in self.global_positions[self.frame_num]]),
                 0,
             ]
         return self.global_positions[self.frame_num][

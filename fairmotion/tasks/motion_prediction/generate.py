@@ -40,7 +40,5 @@ def generate(model, src_seqs, max_len, device):
     with torch.no_grad():
         tgt_seqs = src_seqs[:, -1].unsqueeze(1)
         src_seqs, tgt_seqs = src_seqs.to(device), tgt_seqs.to(device)
-        outputs = model(
-            src_seqs, tgt_seqs, max_len=max_len, teacher_forcing_ratio=0
-        )
+        outputs = model(src_seqs, tgt_seqs, max_len=max_len, teacher_forcing_ratio=0)
         return outputs.double()

@@ -67,7 +67,8 @@ class TestConversions(unittest.TestCase):
         _, p = conversions.T2Rp(T)
 
         np.testing.assert_almost_equal(
-            conversions.p2T(np.array([p]))[0], conversions.p2T(p),
+            conversions.p2T(np.array([p]))[0],
+            conversions.p2T(p),
         )
 
     def test_R2T(self):
@@ -75,14 +76,16 @@ class TestConversions(unittest.TestCase):
         R, _ = conversions.T2Rp(T)
 
         np.testing.assert_almost_equal(
-            conversions.R2T(np.array([R]))[0], conversions.R2T(R),
+            conversions.R2T(np.array([R]))[0],
+            conversions.R2T(R),
         )
 
     def test_T2Rp(self):
         T = test_utils.get_random_T()
 
         np.testing.assert_almost_equal(
-            conversions.T2Rp(np.array([T]))[0][0], conversions.T2Rp(T)[0],
+            conversions.T2Rp(np.array([T]))[0][0],
+            conversions.T2Rp(T)[0],
         )
 
 

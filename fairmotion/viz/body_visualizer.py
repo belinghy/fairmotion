@@ -48,12 +48,8 @@ def get_dfs_order(parents_np):
 
 
 def prepare_mesh_viewer(img_shape):
-    mv = MeshViewer(
-        width=img_shape[0], height=img_shape[1], use_offscreen=True
-    )
-    mv.scene = pyrender.Scene(
-        bg_color=colors["white"], ambient_light=(0.3, 0.3, 0.3)
-    )
+    mv = MeshViewer(width=img_shape[0], height=img_shape[1], use_offscreen=True)
+    mv.scene = pyrender.Scene(bg_color=colors["white"], ambient_light=(0.3, 0.3, 0.3))
     pc = pyrender.PerspectiveCamera(
         yfov=np.pi / 3.0, aspectRatio=float(img_shape[0]) / img_shape[1]
     )
@@ -67,9 +63,9 @@ def prepare_mesh_viewer(img_shape):
 
 def main(args):
     comp_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    bm = BodyModel(
-        model_type="smplh", bm_path=args.body_model_file, num_betas=10
-    ).to(comp_device)
+    bm = BodyModel(model_type="smplh", bm_path=args.body_model_file, num_betas=10).to(
+        comp_device
+    )
     faces = c2c(bm.f)
 
     img_shape = (1600, 1600)
@@ -81,7 +77,8 @@ def main(args):
         v_up_env=np.array([0.0, 0.0, 1.0]),
     )
     motion = motion_ops.rotate(
-        motion, conversions.Ax2R(conversions.deg2rad(-90)),
+        motion,
+        conversions.Ax2R(conversions.deg2rad(-90)),
     )
     mv = prepare_mesh_viewer(img_shape)
 
@@ -107,19 +104,13 @@ def main(args):
                 continue
             pose_idx = amass_joint - 1
             # Convert rotation matrix to axis angle
-            axis_angles = conversions.R2A(
-                conversions.T2R(pose.data[motion_joint])
-            )
+            axis_angles = conversions.R2A(conversions.T2R(pose.data[motion_joint]))
             body_model_pose_data[pose_idx * 3 : pose_idx * 3 + 3] = axis_angles
 
-        pose_data_t = (
-            torch.Tensor(body_model_pose_data).to(comp_device).unsqueeze(0)
-        )
+        pose_data_t = torch.Tensor(body_model_pose_data).to(comp_device).unsqueeze(0)
         root_orient_t = torch.Tensor(root_orient).to(comp_device).unsqueeze(0)
         trans_t = torch.Tensor(trans).to(comp_device).unsqueeze(0)
-        body = bm(
-            pose_body=pose_data_t, root_orient=root_orient_t, trans=trans_t
-        )
+        body = bm(pose_body=pose_data_t, root_orient=root_orient_t, trans=trans_t)
 
         body_mesh = trimesh.Trimesh(
             vertices=c2c(body.v[0]),

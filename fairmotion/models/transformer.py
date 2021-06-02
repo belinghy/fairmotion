@@ -32,22 +32,18 @@ class PositionalEncoding(nn.Module):
 
 
 class TransformerLSTMModel(nn.Module):
-    def __init__(
-        self, ntoken, ninp, num_heads, hidden_dim, num_layers, dropout=0.5
-    ):
+    def __init__(self, ntoken, ninp, num_heads, hidden_dim, num_layers, dropout=0.5):
         super(TransformerLSTMModel, self).__init__()
         self.pos_encoder = PositionalEncoding(ninp, dropout)
-        encoder_layers = TransformerEncoderLayer(
-            ninp, num_heads, hidden_dim, dropout
-        )
-        self.transformer_encoder = TransformerEncoder(
-            encoder_layers, num_layers
-        )
+        encoder_layers = TransformerEncoderLayer(ninp, num_heads, hidden_dim, dropout)
+        self.transformer_encoder = TransformerEncoder(encoder_layers, num_layers)
         # Use Linear instead of Embedding for continuous valued input
         self.encoder = nn.Linear(ntoken, ninp)
         self.ninp = ninp
         self.decoder = decoders.LSTMDecoder(
-            input_dim=ntoken, hidden_dim=hidden_dim, output_dim=ntoken,
+            input_dim=ntoken,
+            hidden_dim=hidden_dim,
+            output_dim=ntoken,
         )
         self.num_layers = num_layers
 
@@ -84,25 +80,19 @@ class TransformerLSTMModel(nn.Module):
 
 
 class TransformerModel(nn.Module):
-    def __init__(
-        self, ntoken, ninp, num_heads, hidden_dim, num_layers, dropout=0.5
-    ):
+    def __init__(self, ntoken, ninp, num_heads, hidden_dim, num_layers, dropout=0.5):
         super(TransformerModel, self).__init__()
         self.model_type = "Transformer"
         self.src_mask = None
 
         self.pos_encoder = PositionalEncoding(ninp, dropout)
-        encoder_layer = TransformerEncoderLayer(
-            ninp, num_heads, hidden_dim, dropout
-        )
+        encoder_layer = TransformerEncoderLayer(ninp, num_heads, hidden_dim, dropout)
         self.transformer_encoder = TransformerEncoder(
             encoder_layer=encoder_layer,
             num_layers=num_layers,
             norm=LayerNorm(ninp),
         )
-        decoder_layer = TransformerDecoderLayer(
-            ninp, num_heads, hidden_dim, dropout
-        )
+        decoder_layer = TransformerDecoderLayer(ninp, num_heads, hidden_dim, dropout)
         self.transformer_decoder = TransformerDecoder(
             decoder_layer=decoder_layer,
             num_layers=num_layers,
@@ -149,17 +139,19 @@ class TransformerModel(nn.Module):
         if self.training:
             # Use last source pose as first input to decoder
             tgt = torch.cat((src[-1].unsqueeze(0), tgt[:-1]))
-            pos_encoder_tgt = self.pos_encoder(
-                self.encoder(tgt) * np.sqrt(self.ninp)
-            )
+            pos_encoder_tgt = self.pos_encoder(self.encoder(tgt) * np.sqrt(self.ninp))
             output = self.transformer_decoder(
-                pos_encoder_tgt, encoder_output, tgt_mask=tgt_mask,
+                pos_encoder_tgt,
+                encoder_output,
+                tgt_mask=tgt_mask,
             )
             output = self.project(output)
         else:
             # greedy decoding
             decoder_input = torch.zeros(
-                max_len, src.shape[1], src.shape[-1],
+                max_len,
+                src.shape[1],
+                src.shape[-1],
             ).type_as(src.data)
             next_pose = tgt[0].clone()
             for i in range(max_len):
@@ -168,7 +160,9 @@ class TransformerModel(nn.Module):
                     self.encoder(decoder_input) * np.sqrt(self.ninp)
                 )
                 decoder_outputs = self.transformer_decoder(
-                    pos_encoded_input, encoder_output, tgt_mask=tgt_mask,
+                    pos_encoded_input,
+                    encoder_output,
+                    tgt_mask=tgt_mask,
                 )
                 output = self.project(decoder_outputs)
                 next_pose = output[i].clone()

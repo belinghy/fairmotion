@@ -13,7 +13,7 @@ class Joint(object):
     """Defines a joint. A hierarchy of joints form a skeleton.
 
     Joint object stores information about child/parent joints, base position
-    transforms, and additional information in a dictionary. 
+    transforms, and additional information in a dictionary.
 
     Attributes:
         name: Optional: Name of the joint. By default, we assign a randomized
@@ -100,7 +100,8 @@ class Joint(object):
         assert isinstance(joint, Joint)
         self.parent_joint = joint
         self.xform_global = np.dot(
-            self.parent_joint.xform_global, self.xform_from_parent_joint,
+            self.parent_joint.xform_global,
+            self.xform_from_parent_joint,
         )
 
 
@@ -184,7 +185,7 @@ class Pose(object):
 
     Use the `to_matrix()` to convert the pose object to numpy matrix form,
     and `from_matrix(data, skel)` to convert numpy matrix to pose object. This
-    is useful for serializing/deserializing data for batch processing, or to 
+    is useful for serializing/deserializing data for batch processing, or to
     create batched tensor data for ML model inputs.
 
     Use `get_transform(key, local)` to get joint transformation matrices, in
@@ -287,9 +288,7 @@ class Pose(object):
         (num_joints, 4, 4)
         """
         num_joints, T_0, T_1 = data.shape
-        assert (
-            num_joints == skel.num_joints()
-        ), "Data for all joints not provided"
+        assert num_joints == skel.num_joints(), "Data for all joints not provided"
         assert T_0 == 4 and T_1 == 4, (
             "Data not provided in 4x4 transformation matrix format. Use "
             "fairmotion.utils.constants.eye_T() for template identity "
@@ -337,7 +336,10 @@ class Motion(object):
     """
 
     def __init__(
-        self, name="motion", skel=None, fps=60,
+        self,
+        name="motion",
+        skel=None,
+        fps=60,
     ):
         self.name = name
         self.skel = skel
@@ -363,7 +365,7 @@ class Motion(object):
         """Adds a pose at the end of motion object.
 
         Args:
-            pose_data: List of pose data, where each pose 
+            pose_data: List of pose data, where each pose
         """
         self.poses.append(Pose(self.skel, pose_data))
 
@@ -372,10 +374,10 @@ class Motion(object):
         return frame * self.fps_inv
 
     def time_to_frame(self, time):
-        '''
-        Adding small value is necessary to prevent error 
+        """
+        Adding small value is necessary to prevent error
         arised from floating point precision
-        '''
+        """
         return int(time * self.fps + 1e-05)
 
     def get_pose_by_frame(self, frame):
@@ -445,9 +447,7 @@ class Motion(object):
             " (seq_len, num_joints, 4, 4)"
         )
         seq_len, num_joints, T_0, T_1 = data.shape
-        assert (
-            num_joints == skel.num_joints()
-        ), "Data for all joints not provided"
+        assert num_joints == skel.num_joints(), "Data for all joints not provided"
         assert T_0 == 4 and T_1 == 4, (
             "Data not provided in 4x4 transformation matrix format. Use "
             "fairmotion.utils.constants.eye_T() for template identity "

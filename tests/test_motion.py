@@ -42,10 +42,14 @@ class TestMotion(unittest.TestCase):
 
     def test_matrix_representation(self):
         ref_motion = bvh.load(file=TEST_SINUSOIDAL_FILE)
-        test_motion = bvh.load(file=TEST_SINUSOIDAL_FILE, load_motion=False,)
+        test_motion = bvh.load(
+            file=TEST_SINUSOIDAL_FILE,
+            load_motion=False,
+        )
         ref_matrix = ref_motion.to_matrix()
         test_motion = motion_class.Motion.from_matrix(
-            ref_matrix, ref_motion.skel,
+            ref_matrix,
+            ref_motion.skel,
         )
         self.assert_motion_equal(ref_motion, test_motion)
 

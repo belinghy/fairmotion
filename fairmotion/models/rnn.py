@@ -92,9 +92,9 @@ class RNN(nn.Module):
         )
 
         if self.training:
-            decoder_outputs = torch.zeros(
-                max_len - 1, src.shape[1], src.shape[2]
-            ).to(src.device)
+            decoder_outputs = torch.zeros(max_len - 1, src.shape[1], src.shape[2]).to(
+                src.device
+            )
             tgt = self.dropout(tgt)
             decoder_outputs, _ = self.run_lstm(
                 tgt[:-1],
@@ -105,9 +105,7 @@ class RNN(nn.Module):
             outputs = torch.cat((encoder_outputs, decoder_outputs))
         else:
             del encoder_outputs
-            outputs = torch.zeros(max_len, src.shape[1], src.shape[2]).to(
-                src.device
-            )
+            outputs = torch.zeros(max_len, src.shape[1], src.shape[2]).to(src.device)
             inputs = lstm_input[-1].unsqueeze(0)
             outputs, _ = self.run_lstm(
                 inputs,

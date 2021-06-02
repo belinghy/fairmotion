@@ -33,7 +33,9 @@ def load(
     if load_skel:
         assert motion.skel is None
         motion.skel = motion_classes.Skeleton(
-            v_up=v_up_skel, v_face=v_face_skel, v_up_env=v_up_env,
+            v_up=v_up_skel,
+            v_face=v_face_skel,
+            v_up_env=v_up_env,
         )
 
     if load_skel:
@@ -70,9 +72,7 @@ def load(
                 joint_cur.info["dof"] = ndofs
                 joint_cur.info["bvh_channels"] = []
                 for i in range(ndofs):
-                    joint_cur.info["bvh_channels"].append(
-                        words[cnt + 2 + i].lower()
-                    )
+                    joint_cur.info["bvh_channels"].append(words[cnt + 2 + i].lower())
                 cnt += ndofs + 2
             elif word == "end":
                 joint_dummy = motion_classes.Joint(name="END")
@@ -88,7 +88,8 @@ def load(
                 if total_depth == 0:
                     for i in range(len(joint_list)):
                         motion.skel.add_joint(
-                            joint_list[i], parent_joint_list[i],
+                            joint_list[i],
+                            parent_joint_list[i],
                         )
                     break
             elif word == "hierarchy":
@@ -110,9 +111,7 @@ def load(
                 cnt += 6
                 t = 0.0
                 range_num_dofs = range(motion.skel.num_dofs)
-                positions = np.zeros(
-                    (num_frames, motion.skel.num_joints(), 3, 3)
-                )
+                positions = np.zeros((num_frames, motion.skel.num_joints(), 3, 3))
                 rotations = np.zeros((num_frames, motion.skel.num_joints(), 3))
                 T = np.zeros((num_frames, motion.skel.num_joints(), 4, 4))
                 T[...] = constants.eye_T()
@@ -129,9 +128,7 @@ def load(
                 for frame_idx in range(num_frames):
                     # if frame_idx == 1:
                     #     break
-                    raw_values = [
-                        float(words[cnt + j]) for j in range_num_dofs
-                    ]
+                    raw_values = [float(words[cnt + j]) for j in range_num_dofs]
                     cnt += motion.skel.num_dofs
                     cnt_channel = 0
                     for joint_idx, joint in enumerate(motion.skel.joints):
@@ -247,7 +244,7 @@ def save(motion, filename, scale=1.0, rot_order="XYZ", verbose=False):
     if verbose:
         print(" >  >  Save BVH file: %s" % filename)
     with open(filename, "w") as f:
-        """ Write hierarchy """
+        """Write hierarchy"""
         if verbose:
             print(" >  >  >  >  Write BVH hierarchy")
         f.write("HIERARCHY\n")
@@ -280,9 +277,7 @@ def save(motion, filename, scale=1.0, rot_order="XYZ", verbose=False):
                 p *= scale
                 R1, R2, R3 = conversions.R2E(R, order=rot_order, degrees=True)
                 if joint == motion.skel.root_joint:
-                    f.write(
-                        "%f %f %f %f %f %f " % (p[0], p[1], p[2], R1, R2, R3)
-                    )
+                    f.write("%f %f %f %f %f %f " % (p[0], p[1], p[2], R1, R2, R3))
                 else:
                     f.write("%f %f %f " % (R1, R2, R3))
             f.write("\n")

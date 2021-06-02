@@ -122,7 +122,8 @@ def transform(motion, T, local=False):
         else:
             R, p = np.dot(R1, R0), p0 + p1
         motion.poses[pose_id].set_root_transform(
-            conversions.Rp2T(R, p), local=False,
+            conversions.Rp2T(R, p),
+            local=False,
         )
     return motion
 

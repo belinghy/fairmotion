@@ -23,9 +23,9 @@ class TestBVH(unittest.TestCase):
         for frame_num, line in enumerate(file_content[-motion.num_frames() :]):
             # Skip first 3 entries that store translation data, and read the
             # Euler angle data of joints
-            angle_data = np.array(
-                list(map(float, line.strip().split()))[3:]
-            ).reshape(-1, 3)
+            angle_data = np.array(list(map(float, line.strip().split()))[3:]).reshape(
+                -1, 3
+            )
             for T, true_E in zip(motion.poses[frame_num].data, angle_data):
                 R, _ = conversions.T2Rp(T)
                 E = conversions.R2E(R, order="XYZ", degrees=True)
@@ -84,9 +84,7 @@ class TestBVH(unittest.TestCase):
             # motion object
             with open(TEST_SINUSOIDAL_FILE) as f:
                 file_content = f.readlines()
-            for frame_num, line in enumerate(
-                file_content[-motion.num_frames() :]
-            ):
+            for frame_num, line in enumerate(file_content[-motion.num_frames() :]):
                 # Skip first 3 entries that store translation data, and read
                 # the Euler angle data of joints
                 angle_data = np.array(
@@ -101,9 +99,7 @@ class TestBVH(unittest.TestCase):
 class TestASFAMC(unittest.TestCase):
     def test_load_motion(self):
         # Load file
-        motion = asfamc.load(
-            file="tests/data/01.asf", motion="tests/data/01_01.amc"
-        )
+        motion = asfamc.load(file="tests/data/01.asf", motion="tests/data/01_01.amc")
         motion_bvh = bvh.load(file="tests/data/01_01.bvh")
         for i in range(1, motion.num_frames()):
             pose = motion.get_pose_by_frame(i)

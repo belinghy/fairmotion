@@ -36,7 +36,10 @@ class Viewer:
     """
 
     def __init__(
-        self, title="glutgui_base", cam=None, size=(800, 600),
+        self,
+        title="glutgui_base",
+        cam=None,
+        size=(800, 600),
     ):
         self.title = title
         self.window = None
@@ -67,7 +70,8 @@ class Viewer:
     def render_callback(self):
         glutSolidSphere(0.3, 20, 20)
         gl_render.render_ground(
-            size=[100, 100], color=[0.8, 0.8, 0.8],
+            size=[100, 100],
+            color=[0.8, 0.8, 0.8],
         )
 
     def _init_GL(self, w, h):
@@ -149,7 +153,9 @@ class Viewer:
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
         gluLookAt(
-            *self.cam_cur.pos, *self.cam_cur.origin, *self.cam_cur.vup,
+            *self.cam_cur.pos,
+            *self.cam_cur.origin,
+            *self.cam_cur.vup,
         )
 
         self.render_callback()
@@ -161,9 +167,7 @@ class Viewer:
             glMatrixMode(GL_PROJECTION)
             glPushMatrix()
             glLoadIdentity()
-            glOrtho(
-                0.0, self.window_size[0], self.window_size[1], 0.0, 0.0, 1.0
-            )
+            glOrtho(0.0, self.window_size[0], self.window_size[1], 0.0, 0.0, 1.0)
 
             glMatrixMode(GL_MODELVIEW)
             glPushMatrix()
@@ -222,11 +226,7 @@ class Viewer:
         # Init glut
         glutInit(())
         glutInitDisplayMode(
-            GLUT_RGBA
-            | GLUT_DOUBLE
-            | GLUT_ALPHA
-            | GLUT_DEPTH
-            | GLUT_MULTISAMPLE
+            GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH | GLUT_MULTISAMPLE
         )
         glutInitWindowSize(*self.window_size)
         glutInitWindowPosition(0, 0)

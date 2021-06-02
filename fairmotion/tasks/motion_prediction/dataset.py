@@ -21,12 +21,8 @@ class Dataset(data.Dataset):
 
     def __getitem__(self, index):
         """Returns one data pair (source, target)."""
-        src_seq = (self.src_seqs[index] - self.mean) / (
-            self.std + constants.EPSILON
-        )
-        tgt_seq = (self.tgt_seqs[index] - self.mean) / (
-            self.std + constants.EPSILON
-        )
+        src_seq = (self.src_seqs[index] - self.mean) / (self.std + constants.EPSILON)
+        tgt_seq = (self.tgt_seqs[index] - self.mean) / (self.std + constants.EPSILON)
         src_seq = torch.Tensor(src_seq).to(device=self.device).double()
         tgt_seq = torch.Tensor(tgt_seq).to(device=self.device).double()
         return src_seq, tgt_seq
@@ -57,6 +53,8 @@ def get_loader(
     # data loader for custom dataset
     # this will return (src_seqs, tgt_seqs) for each iteration
     data_loader = data.DataLoader(
-        dataset=dataset, batch_size=batch_size, shuffle=shuffle,
+        dataset=dataset,
+        batch_size=batch_size,
+        shuffle=shuffle,
     )
     return data_loader

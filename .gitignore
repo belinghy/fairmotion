@@ -1,6 +1,7 @@
 */__pycache__/*
 __pycache__/
 .vscode/
+.idea/
 .eggs/*
 *.egg-info/
 *.ipynb_checkpoints/

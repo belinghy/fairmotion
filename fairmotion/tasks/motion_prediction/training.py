@@ -71,12 +71,20 @@ def train(args):
     for iterations, (src_seqs, tgt_seqs) in enumerate(dataset["train"]):
         model.eval()
         src_seqs, tgt_seqs = src_seqs.to(device), tgt_seqs.to(device)
-        outputs = model(src_seqs, tgt_seqs, teacher_forcing_ratio=1,)
+        outputs = model(
+            src_seqs,
+            tgt_seqs,
+            teacher_forcing_ratio=1,
+        )
         loss = criterion(outputs, tgt_seqs)
         epoch_loss += loss.item()
     epoch_loss = epoch_loss / num_training_sequences
     val_loss = generate.eval(
-        model, criterion, dataset["validation"], args.batch_size, device,
+        model,
+        criterion,
+        dataset["validation"],
+        args.batch_size,
+        device,
     )
     logging.info(
         "Before training: "
@@ -91,11 +99,12 @@ def train(args):
         epoch_loss = 0
         model.train()
         teacher_forcing_ratio = np.clip(
-            (1 - 2 * epoch / args.epochs), a_min=0, a_max=1,
+            (1 - 2 * epoch / args.epochs),
+            a_min=0,
+            a_max=1,
         )
         logging.info(
-            f"Running epoch {epoch} | "
-            f"teacher_forcing_ratio={teacher_forcing_ratio}"
+            f"Running epoch {epoch} | " f"teacher_forcing_ratio={teacher_forcing_ratio}"
         )
         for iterations, (src_seqs, tgt_seqs) in enumerate(dataset["train"]):
             opt.optimizer.zero_grad()
@@ -114,7 +123,11 @@ def train(args):
         epoch_loss = epoch_loss / num_training_sequences
         training_losses.append(epoch_loss)
         val_loss = generate.eval(
-            model, criterion, dataset["validation"], args.batch_size, device,
+            model,
+            criterion,
+            dataset["validation"],
+            args.batch_size,
+            device,
         )
         val_losses.append(val_loss)
         opt.epoch_step(val_loss=val_loss)
@@ -135,13 +148,9 @@ def train(args):
                 max_len=tgt_len,
             )
             logging.info(f"Validation MAE: {mae}")
-            torch.save(
-                model.state_dict(), f"{args.save_model_path}/{epoch}.model"
-            )
+            torch.save(model.state_dict(), f"{args.save_model_path}/{epoch}.model")
             if len(val_losses) == 0 or val_loss <= min(val_losses):
-                torch.save(
-                    model.state_dict(), f"{args.save_model_path}/best.model"
-                )
+                torch.save(model.state_dict(), f"{args.save_model_path}/best.model")
     return training_losses, val_losses
 
 
@@ -172,7 +181,8 @@ if __name__ == "__main__":
         "--batch-size", type=int, help="Batch size for training", default=64
     )
     parser.add_argument(
-        "--shuffle", action='store_true',
+        "--shuffle",
+        action="store_true",
         help="Use this option to enable shuffling",
     )
     parser.add_argument(
@@ -196,8 +206,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--save-model-frequency",
         type=int,
-        help="Frequency (in terms of number of epochs) at which model is "
-        "saved",
+        help="Frequency (in terms of number of epochs) at which model is " "saved",
         default=5,
     )
     parser.add_argument(
@@ -224,7 +233,10 @@ if __name__ == "__main__":
         ],
     )
     parser.add_argument(
-        "--lr", type=float, help="Learning rate", default=None,
+        "--lr",
+        type=float,
+        help="Learning rate",
+        default=None,
     )
     parser.add_argument(
         "--optimizer",

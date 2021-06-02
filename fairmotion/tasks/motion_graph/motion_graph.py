@@ -22,9 +22,7 @@ logging.basicConfig(
 )
 
 
-def create_nodes(
-    motion_idx, motions, base_length, stride_length, compare_length, fps
-):
+def create_nodes(motion_idx, motions, base_length, stride_length, compare_length, fps):
     """
     Creates nodes for the graph by slicing motion sequences based on length
     parameters. A node will have a motion with (base_length+compare_length)
@@ -87,15 +85,11 @@ def compare_and_connect_edge(
         diff_root_ee = 0.0
         diff_trajectory = 0.0
 
-        for k in range(
-            0, frames_compare + 1, (frames_compare + 1) // num_comparison
-        ):
+        for k in range(0, frames_compare + 1, (frames_compare + 1) // num_comparison):
             pose = motions[motion_idx].get_pose_by_frame(frame_end + k)
             vel = motions[motion_idx].get_velocity_by_frame(frame_end + k)
             pose_j = motions[motion_idx_j].get_pose_by_frame(frame_start_j + k)
-            vel_j = motions[motion_idx_j].get_velocity_by_frame(
-                frame_start_j + k
-            )
+            vel_j = motions[motion_idx_j].get_velocity_by_frame(frame_start_j + k)
             if k == 0:
                 T_ref = pose.get_facing_transform()
                 T_ref_j = pose_j.get_facing_transform()
@@ -279,14 +273,14 @@ class MotionGraph(object):
                 frame_start = self.graph.nodes[n]["frame_start"]
                 frame_end = self.graph.nodes[n]["frame_end"]
                 if self.motions[motion_idx] is None:
-                    self.load_motion_at_idx(
-                        motion_idx, self.motion_files[motion_idx]
-                    )
+                    self.load_motion_at_idx(motion_idx, self.motion_files[motion_idx])
                 m = self.motions[motion_idx].detach(
                     frame_start, frame_end + self.frames_blend
                 )
                 motion = motion_ops.append_and_blend(
-                    motion, m, blend_length=self.blend_length,
+                    motion,
+                    m,
+                    blend_length=self.blend_length,
                 )
         return motion
 
@@ -347,10 +341,7 @@ class MotionGraph(object):
                 else:
                     num_visit = np.array(
                         [
-                            self.graph.edges[(cur_node, next_node)][
-                                "num_visit"
-                            ]
-                            + 0.001
+                            self.graph.edges[(cur_node, next_node)]["num_visit"] + 0.001
                             for next_node in successors
                         ]
                     )
@@ -388,9 +379,7 @@ class MotionGraph(object):
 
             # Load the motion if it is not loaded in advance
             if self.motions[motion_idx] is None:
-                self.load_motion_at_idx(
-                    motion_idx, self.motion_files[motion_idx]
-                )
+                self.load_motion_at_idx(motion_idx, self.motion_files[motion_idx])
 
             """
             We should detach with the extra (frames_blend)
@@ -406,7 +395,9 @@ class MotionGraph(object):
                 logging.info(f"[{cur_node}] {self.graph.nodes[cur_node]}")
 
             motion = motion_ops.append_and_blend(
-                motion, m, blend_length=self.blend_length,
+                motion,
+                m,
+                blend_length=self.blend_length,
             )
 
             t_processed = motion.length()
@@ -434,9 +425,7 @@ class MotionGraph(object):
         for i in range(num_component):
             nodes += components[i]
         logging.info(f"Using reduced component with {len(nodes)} nodes")
-        self.graph.remove_nodes_from(
-            [n for n in self.graph.nodes if n not in nodes]
-        )
+        self.graph.remove_nodes_from([n for n in self.graph.nodes if n not in nodes])
 
     def load_motion_at_idx(self, idx, file):
         motion = velocity.MotionWithVelocity(skel=self.skel, fps=self.fps)

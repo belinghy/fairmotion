@@ -18,7 +18,8 @@ class PercentileThresholds:
                 motion = bvh.load(os.path.join(root, filename))
                 self.joints = [joint.name for joint in motion.skel.joints]
                 self._update_velocities(
-                    motion.positions(local=False), 1 / motion.fps,
+                    motion.positions(local=False),
+                    1 / motion.fps,
                 )
         self.thresholds = self._compute_p95_thresholds()
 
@@ -32,8 +33,7 @@ class PercentileThresholds:
 
     def _compute_p95_thresholds(self):
         return {
-            joint: np.percentile(self.velocities[joint], 95)
-            for joint in self.joints
+            joint: np.percentile(self.velocities[joint], 95) for joint in self.joints
         }
 
     def get_threshold(self, joint_idx):

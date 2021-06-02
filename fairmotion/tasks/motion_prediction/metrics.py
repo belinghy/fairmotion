@@ -34,7 +34,8 @@ def euler_diff(predictions, targets):
     # l2 error on euler angles
     idx_to_use = np.where(np.std(euler_targs, 0) > 1e-4)[0]
     euc_error = np.power(
-        euler_targs[:, idx_to_use] - euler_preds[:, idx_to_use], 2,
+        euler_targs[:, idx_to_use] - euler_preds[:, idx_to_use],
+        2,
     )
     euc_error = np.sqrt(np.sum(euc_error, axis=1))  # (-1, ...)
 

@@ -41,9 +41,7 @@ def run_model(model, data_iter, max_len, device, mean, std):
         src_seqs.extend(src_seq.to(device="cpu").numpy())
         tgt_seqs.extend(tgt_seq.to(device="cpu").numpy())
         pred_seq = (
-            generate.generate(model, src_seq, max_len, device)
-            .to(device="cpu")
-            .numpy()
+            generate.generate(model, src_seq, max_len, device).to(device="cpu").numpy()
         )
         pred_seqs.extend(pred_seq)
     return [
@@ -61,10 +59,12 @@ def save_seq(i, pred_seq, src_seq, tgt_seq, skel):
     ref_motion = motion_ops.append(motions[1], motions[2])
     pred_motion = motion_ops.append(motions[1], motions[0])
     bvh.save(
-        ref_motion, os.path.join(args.save_output_path, "ref", f"{i}.bvh"),
+        ref_motion,
+        os.path.join(args.save_output_path, "ref", f"{i}.bvh"),
     )
     bvh.save(
-        pred_motion, os.path.join(args.save_output_path, "pred", f"{i}.bvh"),
+        pred_motion,
+        os.path.join(args.save_output_path, "pred", f"{i}.bvh"),
     )
 
 
@@ -80,7 +80,9 @@ def convert_to_T(pred_seqs, src_seqs, tgt_seqs, rep):
 def save_motion_files(seqs_T, args):
     idxs_to_save = [i for i in range(0, len(seqs_T[0]), len(seqs_T[0]) // 10)]
     amass_dip_motion = amass_dip.load(
-        file=None, load_skel=True, load_motion=False,
+        file=None,
+        load_skel=True,
+        load_motion=False,
     )
     utils.create_dir_if_absent(os.path.join(args.save_output_path, "ref"))
     utils.create_dir_if_absent(os.path.join(args.save_output_path, "pred"))
@@ -108,7 +110,12 @@ def calculate_metrics(pred_seqs, tgt_seqs):
 
 def test_model(model, dataset, rep, device, mean, std, max_len=None):
     pred_seqs, src_seqs, tgt_seqs = run_model(
-        model, dataset, max_len, device, mean, std,
+        model,
+        dataset,
+        max_len,
+        device,
+        mean,
+        std,
     )
     seqs_T = convert_to_T(pred_seqs, src_seqs, tgt_seqs, rep)
     # Calculate metric only when generated sequence has same shape as reference
@@ -148,8 +155,7 @@ def main(args):
         model, dataset["test"], rep, device, mean, std, args.max_len
     )
     logging.info(
-        "Test MAE: "
-        + " | ".join([f"{frame}: {mae[frame]}" for frame in mae.keys()])
+        "Test MAE: " + " | ".join([f"{frame}: {mae[frame]}" for frame in mae.keys()])
     )
 
     if args.save_output_path:
@@ -192,20 +198,23 @@ if __name__ == "__main__":
         default=1,
     )
     parser.add_argument(
-        "--max-len", type=int, help="Length of seq to generate", default=None,
+        "--max-len",
+        type=int,
+        help="Length of seq to generate",
+        default=None,
     )
     parser.add_argument(
         "--batch-size", type=int, help="Batch size for testing", default=64
     )
     parser.add_argument(
-        "--shuffle", action='store_true',
+        "--shuffle",
+        action="store_true",
         help="Use this option to enable shuffling",
     )
     parser.add_argument(
         "--epoch",
         type=int,
-        help="Model from epoch to test, will test on best"
-        " model if not specified",
+        help="Model from epoch to test, will test on best" " model if not specified",
         default=None,
     )
     parser.add_argument(

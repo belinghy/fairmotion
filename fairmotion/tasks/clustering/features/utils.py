@@ -69,14 +69,10 @@ def angle_within_range(j1, j2, k1, k2, range):
 def velocity_direction_above_threshold(
     j1, j1_prev, j2, j2_prev, p, p_prev, threshold, time_per_frame=1 / 120
 ):
-    velocity = (
-        np.array(p) - np.array(j1) - (np.array(p_prev) - np.array(j1_prev))
-    )
+    velocity = np.array(p) - np.array(j1) - (np.array(p_prev) - np.array(j1_prev))
     direction = np.array(j2) - np.array(j1)
 
-    velocity_along_direction = np.dot(velocity, direction) / np.linalg.norm(
-        direction
-    )
+    velocity_along_direction = np.dot(velocity, direction) / np.linalg.norm(direction)
     velocity_along_direction = velocity_along_direction / time_per_frame
     return velocity_along_direction > threshold
 
@@ -84,16 +80,12 @@ def velocity_direction_above_threshold(
 def velocity_direction_above_threshold_normal(
     j1, j1_prev, j2, j3, p, p_prev, threshold, time_per_frame=1 / 120
 ):
-    velocity = (
-        np.array(p) - np.array(j1) - (np.array(p_prev) - np.array(j1_prev))
-    )
+    velocity = np.array(p) - np.array(j1) - (np.array(p_prev) - np.array(j1_prev))
     j31 = np.array(j3) - np.array(j1)
     j21 = np.array(j2) - np.array(j1)
     direction = np.cross(j31, j21)
 
-    velocity_along_direction = np.dot(velocity, direction) / np.linalg.norm(
-        direction
-    )
+    velocity_along_direction = np.dot(velocity, direction) / np.linalg.norm(direction)
     velocity_along_direction = velocity_along_direction / time_per_frame
     return velocity_along_direction > threshold
 
@@ -116,9 +108,7 @@ def calc_average_velocity(positions, i, joint_idx, sliding_window, frame_time):
     return np.linalg.norm(average_velocity / (current_window * frame_time))
 
 
-def calc_average_acceleration(
-    positions, i, joint_idx, sliding_window, frame_time
-):
+def calc_average_acceleration(positions, i, joint_idx, sliding_window, frame_time):
     current_window = 0
     average_acceleration = np.zeros(len(positions[0][joint_idx]))
     for j in range(-sliding_window, sliding_window + 1):
@@ -127,10 +117,7 @@ def calc_average_acceleration(
         v2 = (
             positions[i + j + 1][joint_idx] - positions[i + j][joint_idx]
         ) / frame_time
-        v1 = (
-            positions[i + j][joint_idx]
-            - positions[i + j - 1][joint_idx] / frame_time
-        )
+        v1 = positions[i + j][joint_idx] - positions[i + j - 1][joint_idx] / frame_time
         average_acceleration += (v2 - v1) / frame_time
         current_window += 1
     return np.linalg.norm(average_acceleration / current_window)
@@ -149,13 +136,13 @@ def calc_average_velocity_horizontal(
         )
         current_window += 1
     if up_vec == "y":
-        average_velocity = np.array(
-            [average_velocity[0], average_velocity[2]]
-        ) / (current_window * frame_time)
+        average_velocity = np.array([average_velocity[0], average_velocity[2]]) / (
+            current_window * frame_time
+        )
     elif up_vec == "z":
-        average_velocity = np.array(
-            [average_velocity[0], average_velocity[1]]
-        ) / (current_window * frame_time)
+        average_velocity = np.array([average_velocity[0], average_velocity[1]]) / (
+            current_window * frame_time
+        )
     else:
         raise NotImplementedError
     return np.linalg.norm(average_velocity)

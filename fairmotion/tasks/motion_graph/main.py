@@ -21,9 +21,7 @@ if __name__ == "__main__":
         description="Motion graph construction and exploration"
     )
     parser.add_argument("--motion-files", action="append", help="Motion Files")
-    parser.add_argument(
-        "--motion-folder", help="Folder that contains motion files"
-    )
+    parser.add_argument("--motion-folder", help="Folder that contains motion files")
     parser.add_argument(
         "--output-bvh",
         type=str,
@@ -68,9 +66,7 @@ if __name__ == "__main__":
     motions_with_velocity = []
     for motion in motions:
         motion.set_skeleton(skel)
-        motions_with_velocity.append(
-            velocity.MotionWithVelocity.from_motion(motion)
-        )
+        motions_with_velocity.append(velocity.MotionWithVelocity.from_motion(motion))
 
     logging.info(f"Loaded {len(motions_with_velocity)} files")
 

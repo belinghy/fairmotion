@@ -25,7 +25,9 @@ class Velocity(object):
             assert isinstance(pose1, Pose) and isinstance(pose2, Pose)
             self.skel = pose1.skel
             self.data_local, self.data_global = Velocity.compute(
-                pose1, pose2, dt,
+                pose1,
+                pose2,
+                dt,
             )
 
     def set_skel(self, skel):

@@ -21,7 +21,10 @@ def get_tsne_embeddings(X):
 
 def get_mds_embeddings(X):
     X = np.array(X)
-    X_embedded = MDS(n_components=2, random_state=0,).fit_transform(X)
+    X_embedded = MDS(
+        n_components=2,
+        random_state=0,
+    ).fit_transform(X)
     return X_embedded
 
 
@@ -44,9 +47,7 @@ def main(args):
     with open(args.features_file) as f:
         for line in f:
             filename, features = line.split(":")
-            all_features.append(
-                np.array(list(map(float, features.strip().split())))
-            )
+            all_features.append(np.array(list(map(float, features.strip().split()))))
             filenames.append(filename.strip())
     norm_features = normalize_features(all_features)
     if args.algorithm == "tsne":

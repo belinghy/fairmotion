@@ -94,12 +94,10 @@ def run_kmeans_clustering(features, names, args):
 
 
 def run_hierarchical_clustering(features, names, args):
-    hierarchical = AgglomerativeClustering(
-        args.num_clusters, linkage=args.linkage
-    ).fit(features)
-    cluster_centroids = calculate_cluster_centroids(
-        features, hierarchical.labels_
+    hierarchical = AgglomerativeClustering(args.num_clusters, linkage=args.linkage).fit(
+        features
     )
+    cluster_centroids = calculate_cluster_centroids(features, hierarchical.labels_)
     clusters = defaultdict(list)
     for num, label in enumerate(hierarchical.labels_):
         clusters[label].append(
@@ -125,14 +123,10 @@ def main(args):
         for line in f:
             line = line.strip()
             names.append(line.split(":")[0])
-            features.append(
-                [float(x) for x in line.split(":")[-1].split("\t")]
-            )
+            features.append([float(x) for x in line.split(":")[-1].split("\t")])
 
     if 0.0 < args.clip_features < 100.0:
-        np.percentile(
-            features, args.clip_features, axis=0, overwrite_input=True
-        )
+        np.percentile(features, args.clip_features, axis=0, overwrite_input=True)
     if args.normalize_features:
         features = normalize_features(features)
 
@@ -159,9 +153,7 @@ def main(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Cluster features with kMeans"
-    )
+    parser = argparse.ArgumentParser(description="Cluster features with kMeans")
     parser.add_argument("--features", type=str, help="Features tsv file")
     parser.add_argument(
         "--output-csv",
@@ -177,7 +169,10 @@ if __name__ == "__main__":
         help="Clustering technique to be used, one of kmeans and hierarchical",
     )
     parser.add_argument(
-        "--num-clusters", type=int, help="Number of clusters", required=True,
+        "--num-clusters",
+        type=int,
+        help="Number of clusters",
+        required=True,
     )
     parser.add_argument(
         "--linkage",

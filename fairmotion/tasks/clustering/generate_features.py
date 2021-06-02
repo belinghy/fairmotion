@@ -26,24 +26,12 @@ def extract_manual_features(motion):
     f = manual.ManualFeatures(motion, feat_utils.Skeleton.PFNN)
     for _ in range(1, motion.num_frames(), 30):
         pose_features = []
-        pose_features.append(
-            f.f_nmove("neck", "rhip", "lhip", "rwrist", 1.8 * f.hl)
-        )
-        pose_features.append(
-            f.f_nmove("neck", "lhip", "rhip", "lwrist", 1.8 * f.hl)
-        )
-        pose_features.append(
-            f.f_nplane("chest", "neck", "neck", "rwrist", 0.2 * f.hl)
-        )
-        pose_features.append(
-            f.f_nplane("chest", "neck", "neck", "lwrist", 0.2 * f.hl)
-        )
-        pose_features.append(
-            f.f_move("belly", "chest", "chest", "rwrist", 1.8 * f.hl)
-        )
-        pose_features.append(
-            f.f_move("belly", "chest", "chest", "lwrist", 1.8 * f.hl)
-        )
+        pose_features.append(f.f_nmove("neck", "rhip", "lhip", "rwrist", 1.8 * f.hl))
+        pose_features.append(f.f_nmove("neck", "lhip", "rhip", "lwrist", 1.8 * f.hl))
+        pose_features.append(f.f_nplane("chest", "neck", "neck", "rwrist", 0.2 * f.hl))
+        pose_features.append(f.f_nplane("chest", "neck", "neck", "lwrist", 0.2 * f.hl))
+        pose_features.append(f.f_move("belly", "chest", "chest", "rwrist", 1.8 * f.hl))
+        pose_features.append(f.f_move("belly", "chest", "chest", "lwrist", 1.8 * f.hl))
         pose_features.append(
             f.f_angle("relbow", "rshoulder", "relbow", "rwrist", [0, 110])
         )
@@ -51,42 +39,26 @@ def extract_manual_features(motion):
             f.f_angle("lelbow", "lshoulder", "lelbow", "lwrist", [0, 110])
         )
         pose_features.append(
-            f.f_nplane(
-                "lshoulder", "rshoulder", "lwrist", "rwrist", 2.5 * f.sw
-            )
+            f.f_nplane("lshoulder", "rshoulder", "lwrist", "rwrist", 2.5 * f.sw)
         )
         pose_features.append(
             f.f_move("lwrist", "rwrist", "rwrist", "lwrist", 1.4 * f.hl)
         )
-        pose_features.append(
-            f.f_move("rwrist", "root", "lwrist", "root", 1.4 * f.hl)
-        )
-        pose_features.append(
-            f.f_move("lwrist", "root", "rwrist", "root", 1.4 * f.hl)
-        )
+        pose_features.append(f.f_move("rwrist", "root", "lwrist", "root", 1.4 * f.hl))
+        pose_features.append(f.f_move("lwrist", "root", "rwrist", "root", 1.4 * f.hl))
         pose_features.append(f.f_fast("rwrist", 2.5 * f.hl))
         pose_features.append(f.f_fast("lwrist", 2.5 * f.hl))
-        pose_features.append(
-            f.f_plane("root", "lhip", "ltoes", "rankle", 0.38 * f.hl)
-        )
-        pose_features.append(
-            f.f_plane("root", "rhip", "rtoes", "lankle", 0.38 * f.hl)
-        )
+        pose_features.append(f.f_plane("root", "lhip", "ltoes", "rankle", 0.38 * f.hl))
+        pose_features.append(f.f_plane("root", "rhip", "rtoes", "lankle", 0.38 * f.hl))
         pose_features.append(
             f.f_nplane("zero", "y_unit", "y_min", "rankle", 1.2 * f.hl)
         )
         pose_features.append(
             f.f_nplane("zero", "y_unit", "y_min", "lankle", 1.2 * f.hl)
         )
-        pose_features.append(
-            f.f_nplane("lhip", "rhip", "lankle", "rankle", 2.1 * f.hw)
-        )
-        pose_features.append(
-            f.f_angle("rknee", "rhip", "rknee", "rankle", [0, 110])
-        )
-        pose_features.append(
-            f.f_angle("lknee", "lhip", "lknee", "lankle", [0, 110])
-        )
+        pose_features.append(f.f_nplane("lhip", "rhip", "lankle", "rankle", 2.1 * f.hw))
+        pose_features.append(f.f_angle("rknee", "rhip", "rknee", "rankle", [0, 110]))
+        pose_features.append(f.f_angle("lknee", "lhip", "lknee", "lankle", [0, 110]))
         pose_features.append(f.f_fast("rankle", 2.5 * f.hl))
         pose_features.append(f.f_fast("lankle", 2.5 * f.hl))
         pose_features.append(
@@ -95,18 +67,10 @@ def extract_manual_features(motion):
         pose_features.append(
             f.f_angle("neck", "root", "lshoulder", "lelbow", [25, 180])
         )
-        pose_features.append(
-            f.f_angle("neck", "root", "rhip", "rknee", [50, 180])
-        )
-        pose_features.append(
-            f.f_angle("neck", "root", "lhip", "lknee", [50, 180])
-        )
-        pose_features.append(
-            f.f_plane("rankle", "neck", "lankle", "root", 0.5 * f.hl)
-        )
-        pose_features.append(
-            f.f_angle("neck", "root", "zero", "y_unit", [70, 110])
-        )
+        pose_features.append(f.f_angle("neck", "root", "rhip", "rknee", [50, 180]))
+        pose_features.append(f.f_angle("neck", "root", "lhip", "lknee", [50, 180]))
+        pose_features.append(f.f_plane("rankle", "neck", "lankle", "root", 0.5 * f.hl))
+        pose_features.append(f.f_angle("neck", "root", "zero", "y_unit", [70, 110]))
         pose_features.append(
             f.f_nplane("zero", "minus_y_unit", "y_min", "rwrist", -1.2 * f.hl)
         )
@@ -121,7 +85,10 @@ def extract_manual_features(motion):
 
 def extract_kinetic_features(motion, thresholds, up_vec):
     features = kinetic.KineticFeatures(
-        motion, 1 / motion.fps, thresholds, up_vec,
+        motion,
+        1 / motion.fps,
+        thresholds,
+        up_vec,
     )
     kinetic_feature_vector = []
     for i in range(motion.skel.num_joints()):
@@ -154,7 +121,8 @@ def wrapper_extract_features(inputs):
     features = extract_features(filepath, feature_type, thresholds, up_vec)
     filename = filepath.split("/")[-1]
     with open(
-        os.path.join(args.output_folder, "features.tsv"), "a",
+        os.path.join(args.output_folder, "features.tsv"),
+        "a",
     ) as all_features:
         if args.type == "manual":
             all_features.write(
@@ -192,11 +160,12 @@ def main(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Extract features from BVH files"
-    )
+    parser = argparse.ArgumentParser(description="Extract features from BVH files")
     parser.add_argument(
-        "--type", nargs="?", choices=["manual", "kinetic"], default="manual",
+        "--type",
+        nargs="?",
+        choices=["manual", "kinetic"],
+        default="manual",
     )
     parser.add_argument(
         "--folder",
